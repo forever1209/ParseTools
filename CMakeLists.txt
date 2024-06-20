@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.5)
 project(ParseTool)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Bin/) #执行文件 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Bin/lib) #动态库
 include_directories(${CMAKE_SOURCE_DIR}/ParseTool/)
@@ -29,7 +29,6 @@ include_directories(/usr/include/python3.8/)
 include_directories(${CMAKE_SOURCE_DIR}/pybind11/include)
 include_directories(${CMAKE_SOURCE_DIR}/TPL/jsoncpp/include)
 include_directories(${CMAKE_SOURCE_DIR}/TPL/toml11/include)
-include_directories(${CMAKE_SOURCE_DIR}/TPL/Eigen3)
 include_directories(${CMAKE_SOURCE_DIR}/TPL/xtensor/include)
 include_directories(${CMAKE_SOURCE_DIR}/TPL/yaml/include)
 include_directories(${CMAKE_SOURCE_DIR}/TPL/opencv/include/opencv4)

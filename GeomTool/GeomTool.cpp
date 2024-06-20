@@ -384,20 +384,24 @@ namespace mach
                     new_K.row(1) /= 2;
                     m_mapIntrinMat_[camera] = new_K;
 
+                    // auto l_Matrix = parse.GetPklData(pkl_path , "fov30");
                     PklParse parse(m_base_path_);
-                    auto l_Matrix = parse.GetPklData(pkl_path , "fov30");
-                    l_Matrix.block<2,3>(0,0) = l_Matrix.block<2,3>(0,0) / 2;
+                    auto l_array = parse.GetPklDataXt(pkl_path , "fov30");
+                    auto block_view = xt::view(l_array, xt::range(0, 2), xt::range(0, 3));
+                    block_view /= 2;
                     cv::Mat new_K_fov30(3, 3, CV_64F);
-                    FillCvMatFromEigen(l_Matrix,new_K_fov30);
+                    // FillCvMatFromEigen(l_Matrix,new_K_fov30);
+                    FillCvMatFromXtensor(l_array,new_K_fov30);
                     m_mapIntrinMat_[camera+"_fov30"] = new_K_fov30;
                 }
                 if(camera.find("100") != std::string::npos)
                 {
                     PklParse parse(m_base_path_);
-                    auto l_Matrix = parse.GetPklData(pkl_path , "fov70");
-                    l_Matrix.block<2,3>(0,0) = l_Matrix.block<2,3>(0,0) / 2;
+                    auto l_array = parse.GetPklDataXt(pkl_path , "fov70");
+                    auto block_view = xt::view(l_array, xt::range(0, 2), xt::range(0, 3));
+                    block_view /= 2;
                     cv::Mat new_K(3, 3, CV_64F);
-                    FillCvMatFromEigen(l_Matrix,new_K);
+                    FillCvMatFromXtensor(l_array,new_K);
                     m_mapIntrinMat_[camera] = new_K;
                 }
             }
@@ -420,13 +424,11 @@ namespace mach
             ida_mat(1, 3) = -crop_h;
             return ida_mat;
         }
-        void GeomTool::FillCvMatFromEigen(const Eigen::MatrixXd &eigenMatrix, cv::Mat &cvMatrix)
+        void GeomTool::FillCvMatFromXtensor(const xt::xarray<double> &xtensorMatrix, cv::Mat &cvMatrix)
         {
-            assert(eigenMatrix.rows() == cvMatrix.rows && eigenMatrix.cols() == cvMatrix.cols);
-            // 遍历 Eigen 矩阵，并将数据填充到 cv::Mat 中
-            for (int i = 0; i < eigenMatrix.rows(); ++i) {
-                for (int j = 0; j < eigenMatrix.cols(); ++j) {
-                    cvMatrix.at<double>(i, j) = eigenMatrix(i, j);
+            for (size_t i = 0; i < xtensorMatrix.shape()[0]; ++i) {
+                for (size_t j = 0; j < xtensorMatrix.shape()[1]; ++j) {
+                    cvMatrix.at<double>(i, j) = xtensorMatrix(i, j);
                 }
             }
         }

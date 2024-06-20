@@ -7,7 +7,6 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 #include <pybind11/embed.h>
-#include <Eigen/Dense>
 #include <opencv2/core.hpp>
 #include <xtensor.hpp>
 namespace mach
@@ -25,9 +24,9 @@ namespace mach
         public:
             PklParse(const std::string &path){m_strBasePath_ = path;}
             ~PklParse(){std::cout <<"release PklParse"<<std::endl;}
-            Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic>   GetPklData(const std::string &pkl_file,const std::string &str_key)
+            xt::xarray<double>   GetPklDataXt(const std::string &pkl_file,const std::string &str_key)
             {
-                Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic> empty_array;
+                xt::xarray<double> empty_array;
                 try {
                     py::module sys = py::module::import("sys");
                 // 将Cython编译的Python代码库文件所在目录添加到sys.path中
@@ -48,12 +47,11 @@ namespace mach
                                 // std::cout<<"array "<<array<<std::endl;
                                 auto buffer_info = array.request();
                                 double *ptr = static_cast<double *>(buffer_info.ptr);
-                                // Convert to Eigen array
-                                Eigen::Map<Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> eigen_array(ptr, buffer_info.shape[0], buffer_info.shape[1]);
-                                // Eigen::Map<Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic>> eigen_array(ptr, buffer_info.shape[0], buffer_info.shape[1]);
-                                // Eigen::Map<Eigen::ArrayXXd,Eigen::RowMajor> eigen_array(ptr, buffer_info.shape[0], buffer_info.shape[1]);
-                                // std::cout << std::setprecision(8)<< "Eigen array:\n" << eigen_array << std::endl;
-                                return eigen_array;
+                                // Convert to Xtensor array
+                                xt::xarray<double> xt_array = xt::adapt(ptr, buffer_info.size,
+                                                                        xt::no_ownership(),
+                                                                        std::vector<std::size_t>{buffer_info.shape[0], buffer_info.shape[1]});
+                                return xt_array;
                             }
                             break;
                         }
@@ -87,7 +85,7 @@ namespace mach
             bool CheckCalibExist(const std::string & config_path);
             double Mean(const std::pair<double,double>& datas);
             xt::xarray<double> CreateIdaMat(const double& resize, const double &crop_w, const double &crop_h) ;
-            void FillCvMatFromEigen(const Eigen::MatrixXd& eigenMatrix, cv::Mat& cvMatrix);
+            void FillCvMatFromXtensor(const xt::xarray<double> & xtensorMatrix, cv::Mat& cvMatrix);
             xt::xarray<double> GenerateFrustum(const DetectionConfig & config_data);
             xt::xarray<double> GenerateFrustumByPy(const DetectionConfig & config_data);
             void CalVoxelCfg(const DetectionConfig & config_data,xt::xarray<double> &voxel_size,xt::xarray<double> &voxel_coord,xt::xarray<double> &voxel_num);
