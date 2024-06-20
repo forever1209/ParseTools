@@ -1,0 +1,11 @@
+inW:704
+inH:564
+mapW:704
+mapH:564
+crop_x:0
+crop_y:0
+crop_W:704
+crop_H:564
+in_format:4
+out_format:4
+interpolation:1

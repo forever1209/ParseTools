@@ -1,0 +1,11 @@
+inW:1408
+inH:792
+mapW:1408
+mapH:792
+crop_x:0
+crop_y:0
+crop_W:1408
+crop_H:792
+in_format:4
+out_format:4
+interpolation:1
