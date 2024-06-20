@@ -119,16 +119,19 @@ if [ -z "$vehicle_id" ] || [ -z "$dst_config_path" ] || [ -z "$models_path" ] ||
     usage
     exit 1
 fi
-
+echo -e "\n ---------------------------------------------------\n"
 DownFovsIntrinsicPkl $pkl_path
 echo -e "\n ---------------------------------------------------\n DownFovsIntrinsicPkl done"
 if [ "$break_models" = True ]; then
     echo "Breaking models..."
 else
+    echo -e "\n ---------------------------------------------------\n"
     DownloadModels $models_path
     echo -e "\n ---------------------------------------------------\n DownloadModels done"
 fi
+echo -e "\n ---------------------------------------------------\n"
 UpdateConfigFile $vehicle_id $dst_config_path
 echo -e "\n ---------------------------------------------------\n UpdateConfigFile done"
+echo -e "\n ---------------------------------------------------\n"
 CopyFile
 echo -e "\n ---------------------------------------------------\n CopyFile done"

@@ -43,7 +43,7 @@ add_executable(ObstacleTool ${CMAKE_SOURCE_DIR}/GeomTool/Obstacle/gen.cpp)
 add_executable(SeTool ${CMAKE_SOURCE_DIR}/GeomTool/Se/main.cpp)
 
 add_subdirectory(
-        pybind11
+    ${CMAKE_SOURCE_DIR}/pybind11
 )
 # message("all src files : ${ALL_MY_SRC}")
 # 导入pybind11库

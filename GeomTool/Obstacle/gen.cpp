@@ -624,8 +624,8 @@ initParams test_lvt_origin(const std::string &file_path ,int l1_tile_num, int l2
                 l2_tile_num_core2 = fuse_tile_idx - l2_tile_num_core1 - l2_tile_num_core0;
                 l2_tile_num_core3 = finally_tile_num - l2_tile_num_core2 - l2_tile_num_core1 - l2_tile_num_core0;
                 flag2 = false;
-                printf("l2_tile_num_core0 = %d;\nl2_tile_num_core1 = %d;\nl2_tile_num_core2 = %d;\nl2_tile_num_core3 = %d;\n", 
-                        l2_tile_num_core0,       l2_tile_num_core1,       l2_tile_num_core2,       l2_tile_num_core3);
+                // printf("l2_tile_num_core0 = %d;\nl2_tile_num_core1 = %d;\nl2_tile_num_core2 = %d;\nl2_tile_num_core3 = %d;\n", 
+                //         l2_tile_num_core0,       l2_tile_num_core1,       l2_tile_num_core2,       l2_tile_num_core3);
             }
         }
 
@@ -770,13 +770,13 @@ int main(int argc, char* argv[]) {
     int l2_tile_num_demo54 = 0;
     int total_valid_points_demo53 = geom_preprocess(l_strBasePath , 0, l1_tile_num, l2_tile_num_demo53); // 调用demo53 geom_xyz的预处理
     int total_valid_points_demo54 = geom_preprocess(l_strBasePath , 1, l1_tile_num, l2_tile_num_demo54); // 调用demo54 geom_xyz的预处理
-    printf("Change these codes in devastator : \n");
-    printf("\033[47m\033[34mfinally_tile_num = %d + %d;\n", l2_tile_num_demo53, l2_tile_num_demo54);
+    // printf("Change these codes in devastator : \n");
+    // printf("\033[47m\033[34mfinally_tile_num = %d + %d;\n", l2_tile_num_demo53, l2_tile_num_demo54);
 
     // dsp 调用逻辑
     // printf("total_valid_points_demo53 %d, total_valid_points_demo54 %d\n", total_valid_points_demo53, total_valid_points_demo54);
     initParams params = test_lvt_origin(l_strBasePath ,l1_tile_num, l2_tile_num_demo53, l2_tile_num_demo54, total_valid_points_demo53, total_valid_points_demo54);
-    printf("\033[0mBin generation finished.\n\033[0m");
+    // printf("\033[0mBin generation finished.\n\033[0m");
     UpdateScalingParameters(l_strConfigPath,l2_tile_num_demo53+l2_tile_num_demo54,params);
     return 0;
 }
