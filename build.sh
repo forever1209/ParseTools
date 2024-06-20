@@ -2,6 +2,7 @@
 cwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 export LD_LIBRARY_PATH="$cwd/TPL/jsoncpp/lib:$cwd/TPL/opencv/lib:$cwd/TPL/yaml/lib:$LD_LIBRARY_PATH"
 rm -rf $cwd/Bin/lib/*
+mkdir -p $cwd/Bin/lib/
 build_project()
 {
     #build pytool
