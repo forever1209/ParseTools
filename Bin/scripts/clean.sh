@@ -6,7 +6,8 @@ CleanBin()
     rm -rf "$cwd/../ChildrenPath/"
     rm -rf "$cwd/../lib/"
     rm -rf "$cwd/../ObstacleTool"
-    rm -rf "$cwd/../ParseTool"
+    rm -rf "$cwd/../CalibArgsAutoUpdateTool"
+    rm -rf "$cwd/../ModelTool"
     rm -rf "$cwd/../SeTool"
     mkdir -p "$cwd/../lib/"
 }

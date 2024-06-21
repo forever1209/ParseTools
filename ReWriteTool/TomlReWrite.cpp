@@ -547,9 +547,12 @@ namespace mach
                             }
                             if(l_stParseData.type_ == ParseFileType::CAMERA_PARAMS && l_stParseData.camera_data_.type == CameraParamType::EXTRINSIC)
                             {
-                                auto &l_tmRfuCamMatrix = toml::find(l_tmCamParams, "rfu_cam_matrix"); 
+                                auto &l_tmRfuCamMatrix = toml::find(l_tmCamParams, "cam_rfu_matrix"); 
                                 auto &l_tmCameraRotation = toml::find(l_tmRfuCamMatrix, "rotation"); 
                                 auto &l_tmCameraTranslation = toml::find(l_tmRfuCamMatrix, "translation"); 
+                                toml::array eulers_array = {l_stParseData.camera_data_.euler_degree_.x_, l_stParseData.camera_data_.euler_degree_.y_, l_stParseData.camera_data_.euler_degree_.z_};  
+                                l_tmRfuCamMatrix["eulers"] = eulers_array;
+                                l_tmRfuCamMatrix["eulers"];
                                 if(l_tmCameraRotation.size()==4)
                                 {
                                     l_tmCameraRotation.at(0) = CompareDoubleData(l_stParseData.camera_data_.transform_.rotation_.w_,toml::get<long double>(l_tmCameraRotation.at(0)))?toml::get<long double>(l_tmCameraRotation.at(0)):l_stParseData.camera_data_.transform_.rotation_.w_;
@@ -580,7 +583,7 @@ namespace mach
                             l_strCalibTime = l_stParseData.gnss_data_.calib_time_;
                             if(l_stParseData.type_ == ParseFileType::GNSS_PARAMS)
                             {
-                                auto &l_tmGnssParams = toml::find(l_tmCalibrationParam, "gnss_ego");
+                                auto &l_tmGnssParams = toml::find(l_tmCalibrationParam, "ego_gnss");
                                 auto &l_tmGnssRotation = toml::find(l_tmGnssParams, "rotation"); 
                                 auto &l_tmGnssTranslation = toml::find(l_tmGnssParams, "translation");
                                 if(l_tmGnssRotation.size()==4)
@@ -613,7 +616,7 @@ namespace mach
                             auto l_stParseData = m_pLidarParser->GetParams();
                             if(l_stParseData.type_ == ParseFileType::LIDAR_PARAMS)
                             {
-                                auto &l_tmLidarParams = toml::find(l_tmCalibrationParam, "rfu_ego");
+                                auto &l_tmLidarParams = toml::find(l_tmCalibrationParam, "ego_rfu");
                                 auto &l_tmLidarRotation = toml::find(l_tmLidarParams, "rotation"); 
                                 auto &l_tmLidarTranslation = toml::find(l_tmLidarParams, "translation");
                                 if(l_tmLidarRotation.size()==4)

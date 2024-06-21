@@ -16,7 +16,7 @@ build_project()
     cd $cwd
     mkdir -p build && cd build
     cmake .. && make -j$1
-    LIBS=$(ldd $cwd/Bin/ParseTool | grep "=>" | awk '{print $3}')
+    LIBS=$(ldd $cwd/Bin/CalibArgsAutoUpdateTool | grep "=>" | awk '{print $3}')
     for lib in $LIBS; do
         if [ -f $lib ]; then  # 确保文件存在
             cp $lib $target_dir

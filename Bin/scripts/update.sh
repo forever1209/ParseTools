@@ -1,4 +1,8 @@
 #!/bin/bash
+declare -A VehicleMap
+VehicleMap["car602"]="car_00602"
+VehicleMap["car201"]="car_byd_han_00001"
+VehicleMap["car202"]="car_byd_han_00002"
 vehicle_id=""
 dst_config_path=""
 models_path=""
@@ -34,7 +38,7 @@ UpdateConfigFile()
     car_id=$1
     config_path=$2
     echo "update config"
-    parse_tool_bin_path=$cwd"/../ParseTool"
+    parse_tool_bin_path=$cwd"/../CalibArgsAutoUpdateTool"
     conflate_models_cmd="$parse_tool_bin_path -m $type -i $car_id -d $config_path"
     echo $conflate_models_cmd
     eval "$conflate_models_cmd"
@@ -53,9 +57,65 @@ UpdateConfigFile()
     echo $camera_bin_cmd
     eval "$camera_bin_cmd"
 }
+UpdateModelsPath()
+{
+    local models_path=$1
+    local new_model_path=$2
+    local config_allinone=$dst_config_path/allinone.toml
+    local ModelPathTool=$cwd"/../ModelTool"
+    path_update_cmd="$ModelPathTool $config_allinone $models_path $new_model_path"
+    echo $path_update_cmd
+    eval "$path_update_cmd"
+}
 CopyFile()
 {
-    echo "now copy all file"
+    car_id=$1
+    config_path=$2
+    models_time=$3
+    local calib_path=$cwd"/../ChildrenPath/calibresult/${VehicleMap[$car_id]}"
+    local latest_folder=""
+    for folder in $calib_path/*; do
+        # 检查是否是文件夹
+        if [ -d "$folder" ]; then
+            # 提取文件夹名中的日期部分
+            folder_date=$(basename "$folder")
+            if [[ $folder_date =~ ^[0-9]{8}$ ]]; then
+                # 如果日期格式正确，比较日期
+                if [ -z "$latest_folder" ] || [[ $folder_date -gt $latest_folder ]]; then
+                    latest_folder=$folder_date
+                fi
+            fi
+        fi
+    done
+    # echo "calib_path is $calib_path latest_folder is $latest_folder"
+    local update_models_time=""
+    if [[ $models_time =~ ([0-9]{8}) ]]; then
+        update_models_time=${BASH_REMATCH[1]}  # 使用BASH_REMATCH数组获取匹配的部分
+        echo "The extracted date is: $update_models_time"
+    else
+        echo "Date not found in the $models_time."
+        exit 1
+    fi
+    local models_path=$config_path/../../models/$car_id/merge_obstacle_lane_bev/a1000/model$update_models_time"_nv12calib$latest_folder"
+    # echo "now begin copy all file models_path is $models_path"
+    mkdir -p $models_path
+    rm -rf $models_path/*
+    local src_path=$cwd"/../ChildrenPath/models/"
+    local src_devastator=$cwd"/../output/"
+    for folder in "$src_path"/*; do
+        # 检查是否是文件夹且名称包含lanedet_
+        if [ -d "$folder" ] && [[ $(basename "$folder") == lanedet_* ]]; then
+            # 提取新的文件夹名称
+            new_folder_name=$(basename "$folder" | sed 's/^lanedet_//')
+            new_folder_path="$models_path/$new_folder_name"
+            mv $folder $new_folder_path
+        fi
+    done
+    mkdir -p "$models_path/devastator_bin"
+    cp $src_devastator/lane_bin/* "$models_path/devastator_bin/"
+    cp $src_devastator/obstacle_bin/* "$models_path/devastator_bin/"
+    mv $src_devastator/se_bin "$models_path/devastator_bin/se"
+    UpdateModelsPath $config_path/model model$update_models_time"_nv12calib$latest_folder"
 }
 usage()
 {
@@ -133,5 +193,5 @@ echo -e "\n ---------------------------------------------------\n"
 UpdateConfigFile $vehicle_id $dst_config_path
 echo -e "\n ---------------------------------------------------\n UpdateConfigFile done"
 echo -e "\n ---------------------------------------------------\n"
-CopyFile
+CopyFile $vehicle_id $dst_config_path $models_path
 echo -e "\n ---------------------------------------------------\n CopyFile done"

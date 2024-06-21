@@ -2,7 +2,8 @@
 /Bin/ChildrenPath/
 /Bin/output/
 /Bin/ObstacleTool
-/Bin/ParseTool
+/Bin/CalibArgsAutoUpdateTool
+/Bin/ModelTool
 /Bin/SeTool
 /Bin/lib/
 PythonTool/build/

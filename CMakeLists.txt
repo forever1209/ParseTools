@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.5)
-project(ParseTool)
+project(CalibArgsAutoUpdateTool)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Bin/) #执行文件 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Bin/lib) #动态库
@@ -24,6 +24,7 @@ aux_source_directory(${CMAKE_SOURCE_DIR}/PreprocessTool/ ALL_MY_SRC)
 aux_source_directory(${CMAKE_SOURCE_DIR}/GeomTool/ ALL_MY_SRC)
 aux_source_directory(${CMAKE_SOURCE_DIR}/GeomTool/LaneLine ALL_MY_SRC)
 list(APPEND ALL_MY_SRC ${CMAKE_SOURCE_DIR}/GeomTool/Obstacle/ObstacleTool.cpp)
+list(FILTER ALL_MY_SRC EXCLUDE REGEX ".*ModelPathReWrite.cpp$")
 # aux_source_directory(${CMAKE_SOURCE_DIR}/GeomTool/Obstacle ALL_MY_SRC)
 include_directories(/usr/include/python3.8/)
 include_directories(${CMAKE_SOURCE_DIR}/pybind11/include)
@@ -40,11 +41,11 @@ link_directories(${CMAKE_SOURCE_DIR}/Bin/lib)
 
 add_executable(ObstacleTool ${CMAKE_SOURCE_DIR}/GeomTool/Obstacle/gen.cpp)
 add_executable(SeTool ${CMAKE_SOURCE_DIR}/GeomTool/Se/main.cpp)
-
+add_executable(ModelTool ${CMAKE_SOURCE_DIR}/ReWriteTool/ModelPathReWrite.cpp)
 add_subdirectory(
     ${CMAKE_SOURCE_DIR}/pybind11
 )
-# message("all src files : ${ALL_MY_SRC}")
+message("all src files :\n ${ALL_MY_SRC}")
 # 导入pybind11库
 find_package(Python3 3.8 REQUIRED COMPONENTS Interpreter Development)
 # 打印找到的 Python 解释器路径以确保正确查找
@@ -59,10 +60,10 @@ message(STATUS "Found NumPy include dir: ${NUMPY_INCLUDE_DIR}")
 include_directories( ${NUMPY_INCLUDE_DIR})
 # SET(Python3_LIBRARIES "/usr/lib/x86_64-linux-gnu/libpython3.8.so")
 
-add_executable(ParseTool main.cpp
+add_executable(CalibArgsAutoUpdateTool main.cpp
 ${ALL_MY_SRC}
 )
-target_link_libraries(ParseTool -ljsoncpp 
+target_link_libraries(CalibArgsAutoUpdateTool -ljsoncpp 
 -lopencv_core -lopencv_features2d -lopencv_flann -lopencv_imgproc -lopencv_calib3d 
 ${Python3_LIBRARIES} pybind11::embed
 -lyaml-cpp
