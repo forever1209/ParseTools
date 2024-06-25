@@ -73,6 +73,7 @@ CopyFile()
     config_path=$2
     models_time=$3
     local calib_path=$cwd"/../ChildrenPath/calibresult/${VehicleMap[$car_id]}"
+    local camera_bins=$cwd"/../ChildrenPath/preprocess/table_allinone/"
     local latest_folder=""
     for folder in $calib_path/*; do
         # 检查是否是文件夹
@@ -115,6 +116,7 @@ CopyFile()
     cp $src_devastator/lane_bin/* "$models_path/devastator_bin/"
     cp $src_devastator/obstacle_bin/* "$models_path/devastator_bin/"
     mv $src_devastator/se_bin "$models_path/devastator_bin/se"
+    cp $camera_bins/* $config_path/camera/piloting/
     UpdateModelsPath $config_path/model model$update_models_time"_nv12calib$latest_folder"
 }
 usage()
